@@ -1,0 +1,61 @@
+const express = require('express')
+const cors = require('cors')
+const config = require('./config/config')
+const { Client } = require('cassandra-driver');
+
+
+const helmet = require('helmet')
+
+const app = express()
+
+app.use(express.json())
+// logger
+const logger = require('winston')
+
+port = config.port || 3000
+
+
+//  parses incoming requests with urlencoded payloads and is based on body-parser
+app.use(express.urlencoded({ extended: true }))
+
+app.use(cors())
+
+
+// credintals needed
+require('./database/casandra-config')
+// console.log(config)
+
+// const client = new Client({
+//     contactPoints: ['cassandra-1', '10.50.9.166'],
+//     localDataCenter: config.localDataCenter,
+//     keyspace: config.keyspace
+// });
+
+// console.log(client)
+
+app.use((err, req, res, next) => {
+    logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    next();
+})
+
+app.use(helmet())
+
+// Error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: err.message });
+});
+
+app.get('/', (req, res) => {
+    return res.status(200).json({
+        message: "server responding "
+    })
+})
+
+app.listen(port, () => {
+    console.table([
+        {
+            port: `${port}`
+        }
+    ])
+})
