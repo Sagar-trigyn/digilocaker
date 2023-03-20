@@ -10,7 +10,8 @@ const app = express()
 
 app.use(express.json())
 // logger
-const logger = require('winston')
+const logger = require('winston');
+const router = require('./routes/cassandra_router');
 
 port = config.port || 3000
 
@@ -25,13 +26,8 @@ app.use(cors())
 require('./database/casandra-config')
 // console.log(config)
 
-// const client = new Client({
-//     contactPoints: ['cassandra-1', '10.50.9.166'],
-//     localDataCenter: config.localDataCenter,
-//     keyspace: config.keyspace
-// });
-
-// console.log(client)
+//routes
+app.use('/api',router) 
 
 app.use((err, req, res, next) => {
     logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);

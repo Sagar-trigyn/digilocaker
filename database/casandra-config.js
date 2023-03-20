@@ -1,20 +1,8 @@
-const { Client } = require('cassandra-driver');
-const config = require('../config/config')
+const cassandra = require('cassandra-driver');
 
-// console.log(config,'kl')
-// const authr
-
-const client = new Client({
-    contactPoints: [config.contactPoints],
-    localDataCenter: config.localDataCenter,
-    keyspace: config.keyspace
-});
-
-// if (client) {
-//     console.log(client)
-// }
-// else{
-//     console.log('false')
-// }
+const client = new cassandra.Client({ contactPoints: ['127.0.0.1:9042'], localDataCenter: 'datacenter1' });
+client.connect()
+    .then(() => console.log('Connected to Cassandra'))
+    .catch(err => console.error(err));
 
 module.exports = client
